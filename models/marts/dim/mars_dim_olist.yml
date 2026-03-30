@@ -1,0 +1,44 @@
+version: 2
+
+models:
+  # --- Dimensão de Calendário ---
+  - name: dim_calendar
+    description: "Tabela de dimensao de tempo para analises temporais (Sazonalidade, YoY, MoM)."
+    columns:
+      - name: id_data
+        description: "Chave primaria da data (formato DATE)"
+        tests:
+          - unique
+          - not_null
+      - name: ano
+        description: "Ano civil da data"
+      - name: mes
+        description: "Numero do mes (1 a 12)"
+      - name: dia
+        description: "Dia do mes"
+      - name: dia_semana
+        description: "Numero do dia da semana (ex: 1 para Domingo ou Segunda, dependendo da config)"
+      - name: mes_nome
+        description: "Nome por extenso do mes em portugues"
+      - name: eh_final_semana
+        description: "Indicador booleano: True se a data cair em um Sabado ou Domingo"
+
+  # --- Dimensão de Clientes ---
+  - name: dim_customers
+    description: "Tabela de dimensao de clientes com atributos geograficos e regionalizacao."
+    columns:
+      - name: id_cliente_pedido
+        description: "Identificador unico do cliente"
+        tests:
+          - unique
+          - not_null
+      - name: id_unico_cliente
+        description: "Identificador permanente do cliente (chave para analise de recompras)"
+      - name: cliente_cep_prefixo
+        description: "Cinco primeiros digitos do CEP do cliente"
+      - name: cliente_cidade
+        description: "Nome da cidade de residencia do cliente"
+      - name: cliente_estado
+        description: "Sigla da Unidade Federativa (UF)"
+      - name: cliente_regiao
+        description: "Regiao macro do Brasil baseada no estado (Norte, Sul, etc.)"

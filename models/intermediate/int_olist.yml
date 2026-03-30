@@ -1,0 +1,26 @@
+version: 2
+
+models:
+  - name: int_detailed_orders
+    description: "Tabela intermediaria que consolida pedidos e itens, calculando prazos e totais financeiros."
+    columns:
+      - name: id_pedido
+        description: "Identificador unico do pedido"
+      - name: id_cliente
+        description: "Chave de ligacao com a tabela de clientes (ID por pedido)"
+      - name: pedido_status
+        description: "Status atual do fluxo do pedido"
+      - name: pedido_data_compra
+        description: "Data e hora em que o cliente realizou a compra"
+      - name: pedido_data_entrega_cliente
+        description: "Data e hora da entrega efetiva na residencia do cliente"
+      - name: dias_para_entrega
+        description: "Diferenca em dias entre a data da compra e a data da entrega"
+      - name: total_itens
+        description: "Soma do valor bruto apenas dos produtos do pedido"
+      - name: total_frete
+        description: "Soma do valor do frete cobrado no pedido"
+      - name: valor_total_pedido
+        description: "Valor final do pedido (soma de itens e frete)"
+      - name: qtd_itens_total
+        description: "Contagem total de SKU/itens presentes no mesmo pedido"

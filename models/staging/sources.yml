@@ -1,0 +1,106 @@
+version: 2
+
+sources:
+  - name: olist 
+    description: "Projeto utilizando dados do ECommerce Olist"
+    schema: raw_olist
+    database: olist-project-491122
+    loader: bigquery
+    
+    tables:
+      - name: raw_orders
+        description: "Tabela de Pedidos"
+        columns:
+          - name: order_id
+            description: "Identificador unico do pedido"
+            tests:
+              - relationships:
+                  to: source('olist', 'orders')
+                  field: order_id
+          - name: customer_id
+            description: "Chave de ligacao com a tabela de clientes (cada pedido tem um customer_id unico por compra)"
+            tests:
+              - not_null
+              - unique
+          - name: order_status
+            description: "Status do pedido (ex: entregue, cancelado, faturado)"
+            tests:
+              - accepted_values:
+                  values: ['delivered', 'shipped', 'canceled', 'invoiced', 'processing', 'approved', 'unavailable', 'created']
+          - name: order_purchase_timestamp
+            description: "Data e hora em que o pedido foi realizado"
+          - name: order_approved_at
+            description: "Data e hora em que o pagamento foi aprovado"
+          - name: order_delivered_carrier_date
+            description: "Data e hora em que o pedido foi entregue a transportadora"
+          - name: order_delivered_customer_date
+            description: "Data e hora da entrega efetiva ao cliente"
+          - name: order_estimated_delivery_date
+            description: "Data de entrega estimada que foi informada ao cliente no momento da compra"
+
+      - name: raw_order_items
+        description: "Tabela de Items"
+        columns:
+          - name: order_id
+            description: "Identificador unico do pedido"
+            tests:
+              - not_null
+          - name: order_item_id
+            description: "Numero sequencial que identifica cada item dentro do mesmo pedido"
+          - name: product_id
+            description: "Identificador unico do produto"
+          - name: seller_id
+            description: "Identificador unico do vendedor"
+          - name: shipping_limit_date
+            description: "Data limite para o vendedor entregar o produto a transportadora"
+          - name: price
+            description: "Preco unitario do item vendido"
+            tests:
+              - dbt_expectations.expect_column_values_to_be_between:
+                  min_value: 0
+          - name: freight_value
+            description: "Valor do frete calculado para o item"
+
+      - name: raw_products
+        description: "Tabela de Produtos"
+        columns:
+          - name: product_id
+            description: "Identificador unico do produto"
+            tests:
+              - not_null
+              - unique
+          - name: product_category_name
+            description: "Nome da categoria em que o produto esta cadastrado"
+          - name: product_name_lenght
+            description: "Quantidade de caracteres do nome do produto"
+          - name: product_description_lenght
+            description: "Quantidade de caracteres da descricao do produto"
+          - name: product_photos_qty
+            description: "Quantidade de fotos publicadas para este produto"
+          - name: product_weight_g
+            description: "Peso do produto em gramas"
+          - name: product_length_cm
+            description: "Comprimento do produto em centimetros"
+          - name: product_height_cm
+            description: "Altura do produto em centimetros"
+          - name: product_width_cm
+            description: "Largura do produto em centimetros"
+      
+      - name: raw_customers
+        description: "Tabela de Clientes"
+        columns:
+          - name: customer_id
+            description: "Identificador unico do cliente"
+            tests:
+              - not_null
+              - unique
+          - name: customer_unique_id
+            description: "Identificador unico e permanente do cliente (permite rastrear o mesmo cliente em varias compras)"
+            tests:
+              - not_null
+          - name: customer_zip_code_prefix
+            description: "Cinco primeiros digitos do CEP do cliente"
+          - name: customer_city
+            description: "Nome da cidade onde o cliente reside"
+          - name: customer_state
+            description: "Sigla do estado do cliente"

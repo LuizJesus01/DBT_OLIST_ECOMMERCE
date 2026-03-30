@@ -1,0 +1,52 @@
+version: 2
+
+models:
+  - name: fat_sales
+    description: "Tabela de fatos de vendas consolidada. Une dados de pedidos, itens, clientes e calendario para analise de performance de vendas e logistica."
+    columns:
+      - name: id_pedido
+        description: "Identificador unico do pedido"
+        tests:
+          - unique
+          - not_null
+      - name: id_cliente
+        description: "Chave de ligacao com o pedido especifico (id_cliente_pedido)"
+        tests:
+          - not_null
+          - relationships:
+              to: ref('dim_customers')
+              field: id_cliente_pedido
+      - name: id_unico_cliente
+        description: "Identificador permanente do cliente (CPF/CNPJ mascarado)"
+      - name: cliente_cidade
+        description: "Cidade de destino da entrega"
+      - name: cliente_estado
+        description: "Estado (UF) de destino da entrega"
+      - name: cliente_regiao
+        description: "Regiao macro do Brasil (Sul, Sudeste, etc.)"
+      - name: pedido_status
+        description: "Status final do pedido na base da Olist"
+      - name: pedido_data_compra
+        description: "Data em que a transacao foi iniciada"
+      - name: pedido_data_entrega_cliente
+        description: "Data em que o cliente confirmou o recebimento do produto"
+      - name: pedido_ano
+        description: "Ano da compra (extraido da dimensao de calendario)"
+      - name: pedido_mes
+        description: "Nome do mes da compra (ex: Janeiro, Fevereiro)"
+      - name: pedido_no_fds
+        description: "Indicador booleano: 'True' se a compra foi feita no Sabado ou Domingo"
+      - name: dias_para_entrega
+        description: "Tempo total de transito (Lead Time) do pedido em dias"
+      - name: total_itens
+        description: "Valor financeiro total dos produtos no pedido"
+      - name: total_frete
+        description: "Valor total pago pelo frete no pedido"
+      - name: valor_total_pedido
+        description: "Faturamento bruto do pedido (Itens + Frete)"
+        tests:
+          - not_null
+          - dbt_utils.accepted_range:
+              min_value: 0.01
+      - name: qtd_itens_total
+        description: "Quantidade fisica de produtos dentro do pedido"

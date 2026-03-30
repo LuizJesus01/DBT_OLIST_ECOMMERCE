@@ -1,0 +1,41 @@
+name: 'olist_project'
+version: '1.0.0'
+
+profile: 'olist_project'
+
+model-paths: ["models"]
+analysis-paths: ["analyses"]
+test-paths: ["tests"]
+seed-paths: ["seeds"]
+macro-paths: ["macros"]
+snapshot-paths: ["snapshots"]
+
+clean-targets:
+  - "target"
+  - "dbt_packages"
+
+
+models:
+  olist_project:
+    +persist_docs:
+      relation: true
+      columns: true
+    staging:
+        +schema: staging
+        +materialized: view
+        +tags: ['staging']
+
+    intermediate:
+        +schema: int
+        +materialized: view
+        +tags: ['intermediate']
+
+    marts:
+        +schema: marts
+        +materialized: table
+        +tags: ['marts']
+
+seeds:
+  olist_project:
+    +schema: raw
+    +tags: ['seeds']

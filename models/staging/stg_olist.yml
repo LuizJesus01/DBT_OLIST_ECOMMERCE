@@ -1,0 +1,72 @@
+version: 2
+
+models:
+  - name: stg_orders
+    description: "Tabela de pedidos limpa e com datas convertidas para DATETIME"
+    columns:
+      - name: id_pedido
+        description: "Identificador unico do pedido"
+      - name: id_cliente
+        description: "Chave de ligacao com a tabela de clientes"
+      - name: pedido_status
+        description: "Status atual do pedido (entregue, cancelado, etc)"
+      - name: pedido_data_compra
+        description: "Data e hora em que o pedido foi realizado"
+      - name: pedido_data_aprovado
+        description: "Data e hora em que o pagamento foi aprovado"
+      - name: pedido_data_entrega_transportadora
+        description: "Data e hora em que o pedido foi entregue a transportadora"
+      - name: pedido_data_entrega_cliente
+        description: "Data e hora da entrega efetiva ao cliente"
+      - name: pedido_data_entrega_estimada
+        description: "Data de entrega estimada que foi informada ao cliente no momento da compra"
+
+  - name: stg_order_items
+    description: "Itens dos pedidos com valores convertidos para FLOAT64"
+    columns:
+      - name: id_pedido
+        description: "Identificador unico do pedido"
+      - name: id_produto
+        description: "Identificador unico do produto"
+      - name: id_vendedor
+        description: "Identificador unico do vendedor"
+      - name: item_sequencial
+        description: "Numero sequencial que identifica cada item dentro do mesmo pedido"
+      - name: data_limite_envio
+        description: "Data limite para o vendedor entregar o produto a transportadora"
+      - name: preco_unitario
+        description: "Preco unitario do item vendido"
+      - name: valor_frete
+        description: "Valor do frete calculado para o item"
+
+  - name: stg_products
+    description: "Catalogo de produtos com filtro de categorias nulas"
+    columns:
+      - name: id_produto
+        description: "Identificador unico do produto gerado pelo marketplace"
+      - name: categoria_nome
+        description: "Nome da categoria principal em que o produto esta cadastrado"
+      - name: peso_gramas
+        description: "Peso bruto do produto em gramas, utilizado para calculo de frete"
+      - name: comprimento_cm
+        description: "Comprimento da embalagem do produto em centimetros"
+      - name: altura_cm
+        description: "Altura da embalagem do produto em centimetros"
+      - name: largura_cm
+        description: "Largura da embalagem do produto em centimetros"
+      
+  - name: stg_customers
+    description: "Cadastro de clientes com identificadores unicos e localizacao"
+    columns:
+      - name: id_cliente_pedido
+        description: "Identificador unico do cliente para um pedido especifico (chave de ligacao com pedidos)"
+      - name: id_unico_cliente
+        description: "Identificador unico e permanente do cliente que permite rastrear recompras"
+      - name: cliente_cep_prefixo
+        description: "Cinco primeiros digitos do CEP do cliente"
+      - name: cliente_cidade
+        description: "Nome da cidade de residencia do cliente"
+      - name: cliente_estado
+        description: "Sigla do estado (UF) onde o cliente reside"
+      - name: cliente_regiao
+        description: "Regiao macro do Brasil (Norte, Nordeste, Centro-Oeste, Sudeste, Sul) baseada na sigla do estado do cliente"
